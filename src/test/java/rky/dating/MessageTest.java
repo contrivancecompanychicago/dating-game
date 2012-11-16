@@ -1,4 +1,4 @@
-package rky.dating;
+    package rky.dating;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,6 +12,27 @@ import rky.dating.io.Message;
 public class MessageTest
 {
 
+    @Test
+    public void createAck()
+    {
+        
+        Message m = Message.ACK;
+        assertEquals (
+            "OK", 
+            m.toString()
+        );
+    }
+    
+    @Test
+    public void createError()
+    {
+        Message m = Message.createError("You suck at math.");
+        assertEquals (
+            "ERROR \"You suck at math.\"", 
+            m.toString()
+        );
+    }
+    
     @Test
     public void createVector()
     {
@@ -47,16 +68,6 @@ public class MessageTest
         assertEquals (
           "GAMEOVER -0.09 20", 
           m.toString()
-        );
-    }
-    
-    @Test
-    public void createError()
-    {
-        Message m = Message.createError("You suck at math.");
-        assertEquals (
-            "ERROR \"You suck at math.\"", 
-            m.toString()
         );
     }
     
