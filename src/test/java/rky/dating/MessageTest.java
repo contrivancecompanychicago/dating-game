@@ -15,7 +15,6 @@ public class MessageTest
     @Test
     public void createAck()
     {
-        
         Message m = Message.ACK;
         assertEquals (
             "OK", 
