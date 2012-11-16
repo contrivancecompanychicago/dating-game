@@ -55,7 +55,7 @@ public class MessageTest
         Double v2 = -0.93;
         c.put(k2, v2);
         Message m = Message.createCandidates(c);
-        
+        // Order is arbitrary, so allow for both
         if(!m.toString().equals("[-0.55, 0.23, 0.01] -0.93, [-0.03, 0.23, 0.01] 0.23") 
                 && !m.toString().equals("[-0.03, 0.23, 0.01] 0.23, [-0.55, 0.23, 0.01] -0.93")) {
             assertTrue(false);
