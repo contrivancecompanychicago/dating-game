@@ -1,0 +1,11 @@
+#!/bin/bash
+
+pwd=`pwd`
+cd /tmp
+rm -rf ./geom
+git clone https://github.com/stokedover9k/geom
+cd geom
+mvn package
+cd $pwd
+mvn clean install:install-file -Dfile=/tmp/geom/target/geometry-1.0.0.jar -DgroupId=stoked -DartifactId=geometry -Dversion=1.0.0 -Dpackaging=jar
+mvn verify
