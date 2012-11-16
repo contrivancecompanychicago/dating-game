@@ -1,5 +1,6 @@
     package rky.dating;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
@@ -54,10 +55,11 @@ public class MessageTest
         Double v2 = -0.93;
         c.put(k2, v2);
         Message m = Message.createCandidates(c);
-        assertEquals (
-            "[-0.55, 0.23, 0.01] -0.93, [-0.03, 0.23, 0.01] 0.23", 
-            m.toString()
-        );
+        
+        if(!m.toString().equals("[-0.55, 0.23, 0.01] -0.93, [-0.03, 0.23, 0.01] 0.23") 
+                && !m.toString().equals("[-0.03, 0.23, 0.01] 0.23, [-0.55, 0.23, 0.01] -0.93")) {
+            assertTrue(false);
+        }
     }
     
     @Test
