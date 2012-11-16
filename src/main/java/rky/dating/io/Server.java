@@ -61,7 +61,6 @@ public class Server
     
     public void send(Player p, String s)
     {
-        System.out.println(s + " to be sent to " + p.toString());
         clients.get(p).send(s);
     }
 
