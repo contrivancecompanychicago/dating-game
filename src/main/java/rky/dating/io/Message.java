@@ -8,9 +8,9 @@ public class Message
     public static final Message ACK = new Message("OK");
 
     public static final Message WEIGHT_PROMPT    = new Message("WEIGHTS");
-    public static final Message CANDIDATE_PROMPT = new Message("CANDIDATE");
     public static final Message NOISE_PROMPT     = new Message("NOISE");
-
+    public static final Message CANDIDATE_PROMPT = new Message("CANDIDATE");
+    
     private String body;
 
     public Message(String body)
@@ -65,6 +65,7 @@ public class Message
             }
         }
         result.append("]");
+        
         return result.toString();
     }
 

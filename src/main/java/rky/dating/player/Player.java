@@ -16,6 +16,12 @@ public class Player
         this.role = role;
     }
     
+    @Override
+    public String toString()
+    {
+        return "Player [name=" + name + ", role=" + role + "]";
+    }
+
     public static class Players
     {
         public final Player matchmaker;
@@ -26,6 +32,13 @@ public class Player
             this.matchmaker = m;
             this.person = p;
         }
-    }
 
+        @Override
+        public String toString()
+        {
+            return "Players [matchmaker=" + matchmaker.toString() 
+                    + ", person=" + person.toString() + "]";
+        }
+        
+    }
 }

@@ -34,7 +34,6 @@ public class MessageTest
         Double v2 = -0.93;
         c.put(k2, v2);
         Message m = Message.createCandidates(c);
-        System.out.println(m.toString());
         assertEquals (
             "[-0.55, 0.23, 0.01] -0.93, [-0.03, 0.23, 0.01] 0.23", 
             m.toString()
