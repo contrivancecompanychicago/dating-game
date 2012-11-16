@@ -13,7 +13,7 @@ public class IoManager
         server = new Server(port);
     }
     
-    public Players init(int n)
+    public Players start(int n)
     {
         players = server.start();
         server.send(players.matchmaker, "M " + n );
