@@ -5,7 +5,7 @@ import java.util.Collections;
 
 import vecs.Veci;
 
-public class Preferences extends Veci
+public class Preferences extends HidePrecision2Vec
 {
 	private String msgCache_ = null;
 	

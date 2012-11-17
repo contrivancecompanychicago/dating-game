@@ -5,7 +5,7 @@ import vecs.Veci;
 
 
 
-public class Candidate extends Veci
+public class Candidate extends HidePrecision2Vec
 {
 	private String msgCache_ = null;
 	

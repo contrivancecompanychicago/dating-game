@@ -5,7 +5,7 @@ import java.util.Collections;
 
 import vecs.Veci;
 
-public class Noise extends Veci
+public class Noise extends HidePrecision2Vec
 {
 	private static final double MAX_PROPORTION_NOISE = 0.05;
 	private static final double MAX_NOISE_MAGNITUDE = 0.2;
