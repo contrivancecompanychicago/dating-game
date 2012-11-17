@@ -3,8 +3,6 @@ package rky.dating.primitives;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import vecs.Veci;
-
 public class Noise extends HidePrecision2Vec
 {
 	private static final double MAX_PROPORTION_NOISE = 0.05;
@@ -15,6 +13,11 @@ public class Noise extends HidePrecision2Vec
 	public Noise(int degree)
 	{
 		super(degree);
+	}
+	
+	public Noise(String vecString)
+	{
+		super(vecString);
 	}
 	
 	// validates the noise against given preferences 

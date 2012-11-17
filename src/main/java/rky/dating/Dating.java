@@ -42,7 +42,7 @@ public class Dating
 		StringBuilder randomCandidatesMsg = new StringBuilder();
 		for( int i = 0; i < 20; i++ )
 		{
-			Candidate c = Candidate.generateRandomCandidate( n );
+			Candidate c = new Candidate( Candidate.generateRandomCandidate( n ).toString() );
 			randomCandidatesMsg.append( c.toString() );
 			double score = c.getScore( p );
 			randomCandidatesMsg.append( " " + score + " " );
@@ -74,7 +74,7 @@ public class Dating
 			
 			startTimer( Player.Role.P );
 			informPlayer( Player.Role.P, "NOISE" );
-			Noise noise = getNoiseFromM( p );  //TODO shouldn't need p, should already have it
+			Noise noise = getNoiseFromP( p );  //TODO shouldn't need p, should already have it
 			pauseTimer( Player.Role.P );
 			if( noise.isValid( p ) )
 				confirmPlayer( Player.Role.P, "accepted Noise" );
@@ -84,18 +84,18 @@ public class Dating
 			
 			
 			double score = c.getScore( p, noise );              // noisy score
-			informPlayer( Player.Role.M, "" + score );
+			informPlayer( Player.Role.M, String.format("%.2f", score) );   // note that format() rounds the float
 			maxScore = Math.max( maxScore, c.getScore( p ) );   // actual score
 			
 		}
 		
 		
 		
-		informPlayer( Player.Role.M, maxScore + " " + turnNumber );
-		informPlayer( Player.Role.P, maxScore + " " + turnNumber );
+		informPlayer( Player.Role.M, String.format("%.2f", maxScore) + " " + turnNumber );
+		informPlayer( Player.Role.P, String.format("%.2f", maxScore) + " " + turnNumber );
 	}
 
-	private static Noise getNoiseFromM(Preferences p) {
+	private static Noise getNoiseFromP(Preferences p) {
 		Noise n = Noise.generateRandomNoise( p );
 		System.out.println( "P->S: " + n );
 		return n;

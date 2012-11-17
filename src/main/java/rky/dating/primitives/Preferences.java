@@ -3,8 +3,6 @@ package rky.dating.primitives;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import vecs.Veci;
-
 public class Preferences extends HidePrecision2Vec
 {
 	private String msgCache_ = null;
@@ -12,6 +10,11 @@ public class Preferences extends HidePrecision2Vec
 	public Preferences(int degree)
 	{
 		super(degree);
+	}
+	
+	public Preferences(String vecString)
+	{
+		super(vecString);
 	}
 	
 	

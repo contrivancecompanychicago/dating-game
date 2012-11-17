@@ -13,6 +13,11 @@ public class Candidate extends HidePrecision2Vec
 	{
 		super(degree);
 	}
+	
+	public Candidate(String vecString)
+	{
+		super(vecString);
+	}
 
 	// if candidate is not valid, the reason may be retrieved via the getCachedMsg() method
 	public boolean isValid()
@@ -30,21 +35,21 @@ public class Candidate extends HidePrecision2Vec
 		return null;
 	}
 	
-	public int getScore( Preferences prefs, Noise noise )
+	public double getScore( Preferences prefs, Noise noise )
 	{
 		Veci p = new Veci(prefs);
 		Veci n = new Veci(noise);
 		Veci c = new Veci(this);
 		
-		return Opi.DOT.performOp( Opi.PLUS.performOp(p, n), c );
+		return (double)(Opi.DOT.performOp( Opi.PLUS.performOp(p, n), c )) / 10000;
 	}
 	
-	public int getScore( Preferences prefs )
+	public double getScore( Preferences prefs )
 	{
 		Veci p = new Veci(prefs);
 		Veci c = new Veci(this);
 		
-		return Opi.DOT.performOp( p, c );
+		return (double)(Opi.DOT.performOp( p, c )) / 10000;
 	}
 	
 	public static Candidate generateRandomCandidate( int degree )
