@@ -24,7 +24,7 @@ public class HidePrecision2Vec extends Veci
 		for( int i = 0; i < getDegree(); i++ )
 		{
 			int v = get(i);
-			sb.append(String.format("%.2f(%f), ", ((double)v / 100), ((double)v / 100)));
+			sb.append(String.format("%.2f, ", ((double)v / 100)));
 		}
 		sb.setLength( sb.length() - 2 );
 		sb.append("]");
