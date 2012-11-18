@@ -1,7 +1,5 @@
 package rky.dating;
 
-import static org.junit.Assert.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,9 +30,9 @@ public class IoManagerTest
         Thread.sleep(1000);
         
         TestClient matchmaker = new TestMatchmakerClient(1);
-//        matchmaker.send("team1");
+       // matchmaker.send("team1");
         TestClient person = new TestPersonClient(2);
-//        person.send("team2");
+       // person.send("team2");
         
         /*
         Players players = io.getPlayers();
@@ -72,8 +70,6 @@ public class IoManagerTest
             
             Dating.runGame(N);
             
-//			while (active) {
-//           }
         }
     }
     

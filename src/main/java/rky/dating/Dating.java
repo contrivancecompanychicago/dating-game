@@ -124,9 +124,12 @@ public class Dating
 //		System.out.println( "P->S: " + n );
 //		return n;
 		
-		informPlayer( Role.M, "NOISE" );
-		Message noise = io.receive( io.getPlayers().person );
-		return new Noise( noise.toString() );
+//		informPlayer( Role.P, "NOISE" );
+//		Message noise = io.receive( io.getPlayers().person );
+//		return new Noise( noise.toString() );
+		
+		Message response = io.requestForNoise(getPlayer(Player.Role.P));
+		return new Noise(response.toString());
 	}
 
 	private static Candidate getCandidateFromM(int n) {
@@ -134,9 +137,12 @@ public class Dating
 //		System.out.println( "M->S: " + c );
 //		return c;
 		
-		informPlayer( Role.M, "CANDIDATE" );
-		Message candidate = io.receive( io.getPlayers().matchmaker );
-		return new Candidate( candidate.toString() );
+//		informPlayer( Role.M, "CANDIDATE" );
+//		Message candidate = io.receive( io.getPlayers().matchmaker );
+//		return new Candidate( candidate.toString() );
+		
+		Message response = io.requestForCandidate(getPlayer(Player.Role.M));
+		return new Candidate(response.toString());
 	}
 
 	private static void pauseTimer(Role m) {
@@ -192,10 +198,12 @@ public class Dating
 		// TODO Actually get from player
 //		return Preferences.generateRandomPreferences(n);
 		
-		informPlayer( Role.P, "WEIGHTS" );
-		Message prefs = io.receive( io.getPlayers().person );
-		return new Preferences( prefs.toString() );
+//		informPlayer( Role.P, "WEIGHTS" );
+//		Message prefs = io.receive( io.getPlayers().person );
+//		return new Preferences( prefs.toString() );
 		
+		Message response = io.requestForPlayerPreferences(getPlayer(Player.Role.P));
+		return new Preferences(response.toString());
 	}
 
 }
