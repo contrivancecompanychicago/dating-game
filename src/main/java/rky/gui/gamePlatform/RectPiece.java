@@ -1,5 +1,7 @@
 package rky.gui.gamePlatform;
 
+import java.awt.Event;
+
 // A RECTANGLE SHAPED THING
 
 public class RectPiece extends Piece implements Comparable<RectPiece>
@@ -20,8 +22,23 @@ public class RectPiece extends Piece implements Comparable<RectPiece>
 	}
 
 	public int compareTo(RectPiece o) {
-		// TODO Auto-generated method stub
+		
 		return super.getId() - o.getId();
 	}
+	
+	boolean mouseDown(int x, int y) {
+	 
+		 return true;
+	 }
+
+	 boolean mouseDrag(int x, int y) {
+		 
+		 return true;
+	 }
+
+	 boolean mouseUp(Event e,int x, int y) {
+		
+		 return true;
+	 }
 }
 
