@@ -66,6 +66,11 @@ public class IoManager
 	{
 		send(player,new Message(msg)); 
 	}
+	
+	public void informPlayer(Player player, Message msg)
+	{
+		send(player,msg); 
+	}
 
 	public void confirmPlayer(Player player) 
 	{
@@ -81,7 +86,7 @@ public class IoManager
 
 		if(player.role == Player.Role.P ){
 
-			informPlayer(player, "NOISE" );
+			informPlayer(player,Message.NOISE_PROMPT );
 			return receive(player);
 
 		}else{
@@ -94,7 +99,7 @@ public class IoManager
 
 		if(player.role == Player.Role.M ){
 
-			informPlayer(player, "CANDIDATE" );
+			informPlayer(player,Message.CANDIDATE_PROMPT );
 			return receive(player);
 
 		}else{
@@ -106,7 +111,7 @@ public class IoManager
 
 		if(player.role == Player.Role.P ){
 
-			informPlayer(player, "WEIGHTS" );
+			informPlayer(player, Message.WEIGHT_PROMPT );
 			return receive(player);
 
 		}else{

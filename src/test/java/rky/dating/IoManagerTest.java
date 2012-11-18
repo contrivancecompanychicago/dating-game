@@ -138,6 +138,7 @@ public class IoManagerTest
 		@Override
 		public String receive() throws IOException
 		{
+			System.out.println("recieved data from serve");
 			lastReceive = super.receive();
 			
 			String msg = null;
