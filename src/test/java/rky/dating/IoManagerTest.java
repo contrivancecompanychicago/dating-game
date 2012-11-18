@@ -1,5 +1,7 @@
 package rky.dating;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,7 +18,7 @@ import rky.dating.primitives.Preferences;
 
 public class IoManagerTest
 {
-	protected static int N = 20;
+	protected static int N = 10;
 
     private static final int PORT = 54321;
     
@@ -30,18 +32,19 @@ public class IoManagerTest
         Thread.sleep(1000);
         
         TestClient matchmaker = new TestMatchmakerClient(1);
-       // matchmaker.send("team1");
         TestClient person = new TestPersonClient(2);
-       // person.send("team2");
         
-        /*
-        Players players = io.getPlayers();
-        System.out.println(players);
         String initMsg = matchmaker.receive();
         assertEquals(initMsg, "M 10");
         initMsg = person.receive();
         assertEquals(initMsg, "P 10");
-        */
+        
+    	person.receive();
+
+        
+        Players players = io.getPlayers();
+        System.out.println(players);
+        
     }
     
     static class TestServer extends Thread 
@@ -70,6 +73,8 @@ public class IoManagerTest
             
             Dating.runGame(N);
             
+//			while (active) {
+//           }
         }
     }
     
@@ -138,7 +143,6 @@ public class IoManagerTest
 		@Override
 		public String receive() throws IOException
 		{
-			System.out.println("recieved data from serve");
 			lastReceive = super.receive();
 			
 			String msg = null;
