@@ -41,6 +41,7 @@ public class Server
             Player p1 = new Player(first.receive(), Role.M);
             clients.put(p1, first);
             System.out.println(p1.name + " connected as matchmaker.");
+//            System.out.println( receive(p1) );
 
             // Accept connection from player2; person
             Socket p2Socket = serverSocket.accept();
@@ -48,6 +49,7 @@ public class Server
             Player p2 = new Player(second.receive(), Role.P);
             clients.put(p2, second);
             System.out.println(p2.name + " connected as person.");
+//            System.out.println( receive(p2) );
 
             return new Players(p1, p2);
         }

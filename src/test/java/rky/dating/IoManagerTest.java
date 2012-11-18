@@ -12,9 +12,13 @@ import org.junit.Test;
 
 import rky.dating.io.IoManager;
 import rky.dating.player.Player.Players;
+import rky.dating.primitives.Candidate;
+import rky.dating.primitives.Noise;
+import rky.dating.primitives.Preferences;
 
 public class IoManagerTest
 {
+	protected static int N = 20;
 
     private static final int PORT = 54321;
     
@@ -24,17 +28,22 @@ public class IoManagerTest
         IoManager io = new IoManager(PORT);
         TestServer server = new TestServer(io);
         server.start();
-        TestClient matchmaker = new TestClient(1);
-        matchmaker.send("team1");
-        TestClient person = new TestClient(2);
-        person.send("team2");
+        
         Thread.sleep(1000);
+        
+        TestClient matchmaker = new TestMatchmakerClient(1);
+//        matchmaker.send("team1");
+        TestClient person = new TestPersonClient(2);
+//        person.send("team2");
+        
+        /*
         Players players = io.getPlayers();
         System.out.println(players);
         String initMsg = matchmaker.receive();
         assertEquals(initMsg, "M 10");
         initMsg = person.receive();
         assertEquals(initMsg, "P 10");
+        */
     }
     
     static class TestServer extends Thread 
@@ -50,7 +59,7 @@ public class IoManagerTest
         public void run()
         {
             System.out.println("TEST: About to start server...");
-            io.start(10);
+            io.start(N);
             
             Dating.setIO(io);
             
@@ -61,7 +70,7 @@ public class IoManagerTest
             Dating.setPerson(players.person);
             
             
-            Dating.runGame(10);
+            Dating.runGame(N);
             
 //			while (active) {
 //           }
@@ -108,5 +117,87 @@ public class IoManagerTest
             
             return null;
         }
+    }
+    
+    static class TestPersonClient extends TestClient
+    {
+    	private String lastReceive = null;
+    	private String lastSend     = null;
+    	
+    	private Preferences prefs = null;
+
+		public TestPersonClient(int id) throws Exception
+		{
+			super(id);
+			send( "team1" );
+		}
+    	
+		@Override
+		public void send(String m)
+		{
+			lastSend = m;
+			super.send(m);
+		}
+		
+		@Override
+		public String receive() throws IOException
+		{
+			lastReceive = super.receive();
+			
+			String msg = null;
+			if( lastReceive.equals("WEIGHTS") ) {
+				prefs = Preferences.generateRandomPreferences(N);
+				msg = prefs.toString();
+				send( msg );
+			} 
+			else if( lastReceive.equals("NOISE") ) {
+				msg = Noise.generateRandomNoise( prefs ).toString();
+				send( msg );
+			}
+			else {
+				msg = "I don't know what to say.  The last thing the server told me was: " + lastReceive;
+			}
+			
+			return lastReceive;
+		}
+    }
+    
+    static class TestMatchmakerClient extends TestClient
+    {
+    	private String lastReceive = null;
+    	private String lastSend     = null;
+
+		public TestMatchmakerClient(int id) throws Exception
+		{
+			super(id);
+			send( "team2" );
+		}
+    	
+		@Override
+		public void send(String m)
+		{
+			lastSend = m;
+			super.send(m);
+		}
+		
+		@Override
+		public String receive() throws IOException
+		{
+			String msg = null;
+			
+			lastReceive = super.receive();
+			
+			if( lastReceive.equals( "CANDIDATE" ) ) {
+				msg = Candidate.generateRandomCandidate(N).toString();
+				send( msg );
+			}
+			else {
+				msg = "I don't know what to say. The last thing the server told me was: " + lastReceive;
+			}
+			
+//			lastReceive = super.receive();
+			
+			return lastReceive; 
+		}
     }
 }

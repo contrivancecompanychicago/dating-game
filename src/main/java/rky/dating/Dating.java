@@ -1,6 +1,7 @@
 package rky.dating;
 
 import rky.dating.io.IoManager;
+import rky.dating.io.Message;
 import rky.dating.player.Player;
 import rky.dating.player.Player.Role;
 import rky.dating.primitives.Candidate;
@@ -50,16 +51,14 @@ public class Dating
 
 
 		//------------------------------------------------------
-		startTimer( Player.Role.P );
-		informPlayer( Player.Role.P, "WEIGHTS" );
-
+		startTimer( Role.P );
 		Preferences p = getPlayerPreferences(n);
-		pauseTimer( Player.Role.P );
+		pauseTimer( Role.P );
 
 		if( !p.isValid() ) {
-			informPlayerOfError( Player.Role.P, p.getCachedMsg() );
+			informPlayerOfError( Role.P, p.getCachedMsg() );
 		} else {
-			confirmPlayer( Player.Role.P, "accepted P");
+			confirmPlayer( Role.P, "accepted P");
 		}
 		//------------------------------------------------------
 
@@ -68,13 +67,15 @@ public class Dating
 		StringBuilder randomCandidatesMsg = new StringBuilder();
 		for( int i = 0; i < 20; i++ )
 		{
-			Candidate c = new Candidate( Candidate.generateRandomCandidate( n ).toString() );
+			Candidate c = Candidate.generateRandomCandidate( n );
+			if( !c.isValid() )
+				throw new RuntimeException( "generated an illegal candidate: " + c.toString() + " -> " + c.getCachedMsg() );
 			randomCandidatesMsg.append( c.toString() );
 			double score = c.getScore( p );
 			randomCandidatesMsg.append( " " + score + " " );
 		}
 		randomCandidatesMsg.setLength( randomCandidatesMsg.length()-1 );
-		informPlayer( Player.Role.M, randomCandidatesMsg.toString() );
+		informPlayer( Role.M, randomCandidatesMsg.toString() );
 		//------------------------------------------------------
 
 
@@ -87,8 +88,6 @@ public class Dating
 				break;
 
 			startTimer( Player.Role.M );
-			informPlayer( Player.Role.M, "CANDIDATE" );
-			// TODO receive candidate from user
 			Candidate c = getCandidateFromM( n );
 			pauseTimer( Player.Role.M );
 			if( c.isValid() )
@@ -99,8 +98,7 @@ public class Dating
 
 
 			startTimer( Player.Role.P );
-			informPlayer( Player.Role.P, "NOISE" );
-			Noise noise = getNoiseFromP( p );  //TODO shouldn't need p, should already have it
+			Noise noise = getNoiseFromP();
 			pauseTimer( Player.Role.P );
 			if( noise.isValid( p ) )
 				confirmPlayer( Player.Role.P, "accepted Noise" );
@@ -121,16 +119,24 @@ public class Dating
 		informPlayer( Player.Role.P, String.format("%.2f", maxScore) + " " + turnNumber );
 	}
 
-	private static Noise getNoiseFromP(Preferences p) {
-		Noise n = Noise.generateRandomNoise( p );
-		System.out.println( "P->S: " + n );
-		return n;
+	private static Noise getNoiseFromP() {
+//		Noise n = Noise.generateRandomNoise( p );
+//		System.out.println( "P->S: " + n );
+//		return n;
+		
+		informPlayer( Role.M, "NOISE" );
+		Message noise = io.receive( io.getPlayers().person );
+		return new Noise( noise.toString() );
 	}
 
 	private static Candidate getCandidateFromM(int n) {
-		Candidate c = Candidate.generateRandomCandidate( n ); 
-		System.out.println( "M->S: " + c );
-		return c;
+//		Candidate c = Candidate.generateRandomCandidate( n ); 
+//		System.out.println( "M->S: " + c );
+//		return c;
+		
+		informPlayer( Role.M, "CANDIDATE" );
+		Message candidate = io.receive( io.getPlayers().matchmaker );
+		return new Candidate( candidate.toString() );
 	}
 
 	private static void pauseTimer(Role m) {
@@ -143,17 +149,17 @@ public class Dating
 
 	}
 
-	private static void informPlayer( Player.Role role, String msg) {
+	private static void informPlayer( Role role, String msg) {
 
 		if(io != null){
 			io.informPlayer(getPlayer(role), msg);
 		}else{
 			//TODO once done with testing need to throw exception here
-			System.out.println( "S->" + (role == Player.Role.M ? "M" : "P") + ": " + msg );
+			System.out.println( "S->" + (role == Role.M ? "M" : "P") + ": " + msg );
 		}
 	}
 
-	private static void confirmPlayer( Player.Role role, String clarification) {
+	private static void confirmPlayer( Role role, String clarification) {
 
 		if(io != null){
 			io.confirmPlayer(getPlayer(role));
@@ -164,8 +170,6 @@ public class Dating
 	}
 
 	private static void informPlayerOfError( Player.Role role, String errMsg) {
-		// TODO Actually send to players
-
 		if(io != null){
 			io.informPlayerOfError(getPlayer(role),errMsg);
 		}else{
@@ -186,7 +190,12 @@ public class Dating
 	private static Preferences getPlayerPreferences(int n)
 	{
 		// TODO Actually get from player
-		return Preferences.generateRandomPreferences(n);
+//		return Preferences.generateRandomPreferences(n);
+		
+		informPlayer( Role.P, "WEIGHTS" );
+		Message prefs = io.receive( io.getPlayers().person );
+		return new Preferences( prefs.toString() );
+		
 	}
 
 }

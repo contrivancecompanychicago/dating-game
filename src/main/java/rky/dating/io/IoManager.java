@@ -32,12 +32,15 @@ public class IoManager
 
     public void send(Player p, Message m)
     {
+    	System.err.println("S->" + p + ": " + m);
         server.send(p, m.toString());
     }
 
     public Message receive(Player p)
     {
-        return new Message(server.receive(p));
+    	String msg = server.receive(p);
+    	System.err.println("S<-" + p + ": " + msg);
+    	return new Message(msg);
     }
     
     /**
