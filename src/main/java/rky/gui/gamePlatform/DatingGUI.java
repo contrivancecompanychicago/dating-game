@@ -33,6 +33,9 @@ public class DatingGUI extends GamePlatform {
 
 	public void setup(){
 		addNewBar(new Line(50,250,700,250),0.4);
+		addNewBar(new Line(50,250,700,250),1);
+		addNewBar(new Line(50,250,700,250),-.6);
+
 	}
 
 	public void update() {
@@ -104,15 +107,16 @@ public class DatingGUI extends GamePlatform {
 
 		Point start = l.getStart();
 
-		int barX = 60;
-		int barY = 60;
+		int barX = 0;
+		int barY = l.start.y - 60;
 
 		score += 1; //convert score from 0-2
 
-		double place = score *l.getLength();
+		double place = score *l.getLength()/2;
 
-		barX =(int)( place - 5);
+		barX =(int)( place - 5) + 50;
 
+		System.out.println("x="+barX+"y="+barY);
 		RectPiece bar = new RectPiece();
 		bar.setBounds(barX, barY, 10, 60);
 		bar.setColor(Color.blue);
