@@ -5,6 +5,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import rky.gui.gamePlatform.Line.Point;
+import rky.gui.gamePlatform.Line;
 
 
 @SuppressWarnings("serial")
@@ -20,22 +27,22 @@ public class DatingGUI extends GamePlatform {
 	String team2 = "????";
 
 
-	Piece  chaser;
+	List<RectPiece>  bars = new ArrayList<RectPiece>();
+	Set<RectPiece> setOfBars = new TreeSet<RectPiece>();
+	Line upper,lower;
 
 	public void setup(){
-
-		int w = getWidth(), h = getHeight();
-
-
-		chaser = new RectPiece();
-		chaser.setBounds(150, 200, 60, 100);
-		chaser.setColor(Color.blue);
-		addPiece(chaser);
-
+		addNewBar(new Line(50,250,700,250),0.4);
 	}
 
 	public void update() {
 
+		for(RectPiece p :bars){
+			if(!setOfBars.contains(p)){
+				addPiece(p);
+				setOfBars.add(p);
+			}
+		}
 	}
 
 	public void overlay(Graphics g) {
@@ -66,6 +73,14 @@ public class DatingGUI extends GamePlatform {
 		g2.drawString("0",410, 275+fromOffset);
 
 		g2.setStroke(new BasicStroke(3));
+
+		if(round == 1){
+			upper = new Line(50,250+fromOffset,700,250+fromOffset);
+
+		}else{
+			lower = new Line(50,250+fromOffset,700,250+fromOffset);
+		}
+
 		g2.drawLine(50,250+fromOffset,700,250+fromOffset);
 
 		g2.setFont(smallFont);
@@ -83,6 +98,27 @@ public class DatingGUI extends GamePlatform {
 			g2.drawString(team1,680,300+fromOffset);
 		}
 
+	}
+
+	private void addNewBar(Line l,double score){
+
+		Point start = l.getStart();
+
+		int barX = 60;
+		int barY = 60;
+
+		score += 1; //convert score from 0-2
+
+		double place = score *l.getLength();
+
+		barX =(int)( place - 5);
+
+		RectPiece bar = new RectPiece();
+		bar.setBounds(barX, barY, 10, 60);
+		bar.setColor(Color.blue);
+		addPiece(bar);
+
+		bars.add(bar);
 	}
 
 }
