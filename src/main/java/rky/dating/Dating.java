@@ -1,5 +1,6 @@
 package rky.dating;
 
+import rky.dating.io.IoManager;
 import rky.dating.player.Player;
 import rky.dating.player.Player.Role;
 import rky.dating.primitives.Candidate;
@@ -9,35 +10,60 @@ import rky.dating.primitives.Preferences;
 public class Dating
 {
 
-    public static void main(String[] args)
-    {
-    	// TODO: N should be a command line argument
-        int N = 40;
-        
-        runGame(N);
-    }
+	private static IoManager io;
+	private static Player matchmaker;
+	private static Player person;
 
-	private static void runGame(int n)
+	public static void main(String[] args)
 	{
-		informPlayer( Player.Role.P, "P " + n );
-		informPlayer( Player.Role.M, "M " + n );
-		
+		// TODO: N should be a command line argument
+		int N = 40;
+
+		runGame(N);
+	}
+
+	public static void setIO(IoManager io_manager){
+		io = io_manager;
+	}
+
+	public static Player getMatchmaker() {
+		return matchmaker;
+	}
+
+	public static void setMatchmaker(Player M) {
+		matchmaker = M;
+	}
+
+	public static Player getPerson() {
+		return person;
+	}
+
+	public static void setPerson(Player p) {
+		person = p;
+	}
+
+	public static void runGame(int n)
+	{
+		//initaliztion is done by IOManager
+		//informPlayer( Player.Role.P, "P " + n ); 
+		//informPlayer( Player.Role.M, "M " + n );
+
 
 		//------------------------------------------------------
 		startTimer( Player.Role.P );
 		informPlayer( Player.Role.P, "WEIGHTS" );
-		
+
 		Preferences p = getPlayerPreferences(n);
 		pauseTimer( Player.Role.P );
-		
+
 		if( !p.isValid() ) {
 			informPlayerOfError( Player.Role.P, p.getCachedMsg() );
 		} else {
 			confirmPlayer( Player.Role.P, "accepted P");
 		}
 		//------------------------------------------------------
-		
-		
+
+
 		//------------------------------------------------------
 		StringBuilder randomCandidatesMsg = new StringBuilder();
 		for( int i = 0; i < 20; i++ )
@@ -50,8 +76,8 @@ public class Dating
 		randomCandidatesMsg.setLength( randomCandidatesMsg.length()-1 );
 		informPlayer( Player.Role.M, randomCandidatesMsg.toString() );
 		//------------------------------------------------------
-		
-		
+
+
 		//------------------------------------------------------
 		double maxScore = Double.NEGATIVE_INFINITY;
 		int turnNumber = 0;
@@ -69,9 +95,9 @@ public class Dating
 				confirmPlayer( Player.Role.M, "accepted Candidate" );
 			else
 				informPlayerOfError( Player.Role.M, c.getCachedMsg() );
-			
-			
-			
+
+
+
 			startTimer( Player.Role.P );
 			informPlayer( Player.Role.P, "NOISE" );
 			Noise noise = getNoiseFromP( p );  //TODO shouldn't need p, should already have it
@@ -80,17 +106,17 @@ public class Dating
 				confirmPlayer( Player.Role.P, "accepted Noise" );
 			else
 				informPlayerOfError( Player.Role.P, noise.getCachedMsg() );
-			
-			
-			
+
+
+
 			double score = c.getScore( p, noise );              // noisy score
 			informPlayer( Player.Role.M, String.format("%.2f", score) );   // note that format() rounds the float
 			maxScore = Math.max( maxScore, c.getScore( p ) );   // actual score
-			
+
 		}
-		
-		
-		
+
+
+
 		informPlayer( Player.Role.M, String.format("%.2f", maxScore) + " " + turnNumber );
 		informPlayer( Player.Role.P, String.format("%.2f", maxScore) + " " + turnNumber );
 	}
@@ -109,27 +135,52 @@ public class Dating
 
 	private static void pauseTimer(Role m) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private static void startTimer(Role m) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private static void informPlayer( Player.Role role, String msg) {
-		// TODO Auto-generated method stub
-		System.out.println( "S->" + (role == Player.Role.M ? "M" : "P") + ": " + msg );
+
+		if(io != null){
+			io.informPlayer(getPlayer(role), msg);
+		}else{
+			//TODO once done with testing need to throw exception here
+			System.out.println( "S->" + (role == Player.Role.M ? "M" : "P") + ": " + msg );
+		}
 	}
 
 	private static void confirmPlayer( Player.Role role, String clarification) {
-		// TODO Auto-generated method stub
-		System.out.println( "S->" + (role == Player.Role.M ? "M" : "P") + ": OK    # " + clarification );
+
+		if(io != null){
+			io.confirmPlayer(getPlayer(role));
+		}else{
+			//TODO once done with testing need to throw exception here
+			System.out.println( "S->" + (role == Player.Role.M ? "M" : "P") + ": OK    # " + clarification );
+		}
 	}
 
 	private static void informPlayerOfError( Player.Role role, String errMsg) {
 		// TODO Actually send to players
-		System.out.println( "S->" + (role == Player.Role.M ? "M" : "P") + ": ERROR " + errMsg );
+
+		if(io != null){
+			io.informPlayerOfError(getPlayer(role),errMsg);
+		}else{
+			//TODO once done with testing need to throw exception here
+			System.out.println( "S->" + (role == Player.Role.M ? "M" : "P") + ": ERROR " + errMsg );
+		}
+	}
+	
+	private static Player getPlayer(Player.Role role){
+
+		if(role == Player.Role.M){
+			return matchmaker;
+		}else{
+			return person;
+		}
 	}
 
 	private static Preferences getPlayerPreferences(int n)

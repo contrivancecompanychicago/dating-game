@@ -35,7 +35,7 @@ public class Server
     {
         try
         {
-            // Accept connection from player1; matchmaker
+            //Accept connection from player1; matchmaker
             Socket p1Socket = serverSocket.accept();
             Client first = new Client(p1Socket);
             Player p1 = new Player(first.receive(), Role.M);

@@ -51,7 +51,20 @@ public class IoManagerTest
         {
             System.out.println("TEST: About to start server...");
             io.start(10);
-            while (active) { }
+            
+            Dating.setIO(io);
+            
+            //initiate players
+            Players players = io.getPlayers();
+            
+            Dating.setMatchmaker(players.matchmaker);
+            Dating.setPerson(players.person);
+            
+            
+            Dating.runGame(10);
+            
+//			while (active) {
+//           }
         }
     }
     

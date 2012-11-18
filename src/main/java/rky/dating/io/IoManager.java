@@ -57,5 +57,20 @@ public class IoManager
     {
         return players;
     }
+        
+    public void informPlayer(Player player, String msg) {
+    	
+    	send(player,new Message(msg));
+    
+    }
+
+	public void confirmPlayer(Player player) {
+
+    	send(player,Message.ACK);
+	}
+
+	public void informPlayerOfError(Player player, String errMsg) {
+		send(player, Message.createError(errMsg));
+	}
     
 }
