@@ -59,11 +59,11 @@ public class IoManagerTest
 		System.out.println(matchmaker.receive());
 		System.out.println(person.receive());
 
-		Thread.sleep(1000000);
 
 		Players players = io.getPlayers();
 		System.out.println(players);
 
+//		Thread.sleep(1000000);
 	}
 
 	static class TestServer extends Thread 
