@@ -42,18 +42,17 @@ public class IoManagerTest
 		assertEquals(person.receive(),"WEIGHTS");
 		assertEquals(person.receive(),"OK");
 
+		matchmaker.receive(); // get list of all candidates <I forgot this>
+		
 		for(int i = 0 ; i <20; i++){
 			
 			String resp1 = matchmaker.receive(); // receive candidate
-			System.out.println( String.format("1(%d): %s", i, resp1) );  //0.0
-			String str = matchmaker.receive(); //recieve score
-			System.out.println( String.format("2(%d): %s", i, str) );    //candidate
 
 			assertEquals(matchmaker.receive(),"OK");
 			String resp2 = person.receive(); // receive noise
-			System.out.println( String.format("3(%d): %s", i, resp2) );
 			assertEquals(person.receive(),"OK"); // receive noise
-			
+
+			matchmaker.receive(); //recieve score
 		}
 		
 		System.out.println("game ended");
