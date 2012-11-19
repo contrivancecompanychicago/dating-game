@@ -137,12 +137,10 @@ public class Dating
 			
 			informPlayerOfError( getRoleOf(e.getResponsiblePlayer()), e.toString() );
 		}
-		finally
-		{
-			informPlayer( Player.Role.M, finalScore + " " + turnsUsed );
-			informPlayer( Player.Role.P, finalScore + " " + turnsUsed );
-		}
-
+		
+			informPlayer( Player.Role.M, "GAMEOVER " + finalScore + " " + turnsUsed );
+			informPlayer( Player.Role.P, "GAMEOVER " + finalScore + " " + turnsUsed );
+		
 	}
 
 	private static Noise getNoiseFromP() {
