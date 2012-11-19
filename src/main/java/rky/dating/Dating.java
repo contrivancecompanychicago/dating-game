@@ -62,7 +62,6 @@ public class Dating
 		}
 		//------------------------------------------------------
 
-
 		//------------------------------------------------------
 		StringBuilder randomCandidatesMsg = new StringBuilder();
 		for( int i = 0; i < 20; i++ )
@@ -203,7 +202,8 @@ public class Dating
 //		return new Preferences( prefs.toString() );
 		
 		Message response = io.requestForPlayerPreferences(getPlayer(Player.Role.P));
-		return new Preferences(response.toString());
+		Preferences p = new Preferences(response.toString()); 
+		return p;
 	}
 
 }

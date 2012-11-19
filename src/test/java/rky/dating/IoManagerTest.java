@@ -20,131 +20,147 @@ public class IoManagerTest
 {
 	protected static int N = 10;
 
-    private static final int PORT = 54321;
-    
-    @Test
-    public void test() throws Exception
-    {
-        IoManager io = new IoManager(PORT);
-        TestServer server = new TestServer(io);
-        server.start();
-        
-        Thread.sleep(1000);
-        
-        TestClient matchmaker = new TestMatchmakerClient(1);
-        TestClient person = new TestPersonClient(2);
-        
-        String initMsg = matchmaker.receive();
-        assertEquals(initMsg, "M 10");
-        initMsg = person.receive();
-        assertEquals(initMsg, "P 10");
-        
-    	person.receive();
+	private static final int PORT = 54321;
 
-        
-        Players players = io.getPlayers();
-        System.out.println(players);
-        
-    }
-    
-    static class TestServer extends Thread 
-    {
-        private IoManager io;
-        public volatile boolean active = true;
+	@Test
+	public void test() throws Exception
+	{
+		IoManager io = new IoManager(PORT);
+		TestServer server = new TestServer(io);
+		server.start();
 
-        public TestServer(IoManager io)
-        {
-            this.io = io;
-        }
-        
-        public void run()
-        {
-            System.out.println("TEST: About to start server...");
-            io.start(N);
-            
-            Dating.setIO(io);
-            
-            //initiate players
-            Players players = io.getPlayers();
-            
-            Dating.setMatchmaker(players.matchmaker);
-            Dating.setPerson(players.person);
-            
-            
-            Dating.runGame(N);
-            
-//			while (active) {
-//           }
-        }
-    }
-    
-    static class TestClient 
-    {
-        private Socket           socket;
-        private PrintWriter      out;
-        private BufferedReader   in;
-        private int              id;
+		Thread.sleep(1000);
 
-        public TestClient(int id) throws Exception
-        {
-            try
-            {
-                socket = new Socket("localhost", PORT);
-                out = new PrintWriter(socket.getOutputStream(), true);
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                this.id = id;
-                System.out.println("Client " + id + " connected.");
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace(System.err);
-                System.exit(1);
-            }
-        }
+		TestClient matchmaker = new TestMatchmakerClient(1);
+		TestClient person = new TestPersonClient(2);
 
-        public void send(String m)
-        {
-            out.println(m);
-        }
+		String initMsg = matchmaker.receive();
+		assertEquals(initMsg, "M 10");
+		initMsg = person.receive();
+		assertEquals(initMsg, "P 10");
 
-        public String receive() throws IOException
-        {
-            String message;
-            while ((message = in.readLine()) != null)
-            {
-                System.out.println("Client " + id + " received: " + message);
-                return message;
-            }
-            
-            return null;
-        }
-    }
-    
-    static class TestPersonClient extends TestClient
-    {
-    	private String lastReceive = null;
-    	private String lastSend     = null;
-    	
-    	private Preferences prefs = null;
+		assertEquals(person.receive(),"WEIGHTS");
+		assertEquals(person.receive(),"OK");
+
+		for(int i = 0 ; i <20; i++){
+			
+			String resp1 = matchmaker.receive(); // receive candidate
+			matchmaker.receive(); //recieve score
+
+			assertEquals(matchmaker.receive(),"OK");
+			String resp2 = person.receive(); // receive noise
+			assertEquals(person.receive(),"OK"); // receive noise
+			
+		}
+		
+		System.out.println("game ended");
+		System.out.println(matchmaker.receive());
+		System.out.println(person.receive());
+
+		Thread.sleep(1000000);
+
+		Players players = io.getPlayers();
+		System.out.println(players);
+
+	}
+
+	static class TestServer extends Thread 
+	{
+		private IoManager io;
+		public volatile boolean active = true;
+
+		public TestServer(IoManager io)
+		{
+			this.io = io;
+		}
+
+		public void run()
+		{
+			System.out.println("TEST: About to start server...");
+			io.start(N);
+
+			Dating.setIO(io);
+
+			//initiate players
+			Players players = io.getPlayers();
+
+			Dating.setMatchmaker(players.matchmaker);
+			Dating.setPerson(players.person);
+
+			Dating.runGame(N);
+
+			//			while (active) {
+				//           }
+		}
+	}
+
+	static class TestClient 
+	{
+		private Socket           socket;
+		private PrintWriter      out;
+		private BufferedReader   in;
+		private int              id;
+
+		public TestClient(int id) throws Exception
+		{
+			try
+			{
+				socket = new Socket("localhost", PORT);
+				out = new PrintWriter(socket.getOutputStream(), true);
+				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				this.id = id;
+				System.out.println("Client " + id + " connected.");
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace(System.err);
+				System.exit(1);
+			}
+		}
+
+		public void send(String m)
+		{
+			out.println(m);
+		}
+
+		public String receive() throws IOException
+		{
+			String message;
+			while ((message = in.readLine()) != null)
+			{
+				System.out.println("Client " + id + " received: " + message);
+				return message;
+			}
+
+			return null;
+		}
+	}
+
+	static class TestPersonClient extends TestClient
+	{
+		private String lastReceive = null;
+		private String lastSend     = null;
+
+		private Preferences prefs = null;
 
 		public TestPersonClient(int id) throws Exception
 		{
 			super(id);
 			send( "team1" );
 		}
-    	
+
 		@Override
 		public void send(String m)
 		{
 			lastSend = m;
 			super.send(m);
 		}
-		
+
 		@Override
 		public String receive() throws IOException
 		{
 			lastReceive = super.receive();
-			
+
 			String msg = null;
 			if( lastReceive.equals("WEIGHTS") ) {
 				prefs = Preferences.generateRandomPreferences(N);
@@ -158,36 +174,36 @@ public class IoManagerTest
 			else {
 				msg = "I don't know what to say.  The last thing the server told me was: " + lastReceive;
 			}
-			
+
 			return lastReceive;
 		}
-    }
-    
-    static class TestMatchmakerClient extends TestClient
-    {
-    	private String lastReceive = null;
-    	private String lastSend     = null;
+	}
+
+	static class TestMatchmakerClient extends TestClient
+	{
+		private String lastReceive = null;
+		private String lastSend     = null;
 
 		public TestMatchmakerClient(int id) throws Exception
 		{
 			super(id);
 			send( "team2" );
 		}
-    	
+
 		@Override
 		public void send(String m)
 		{
 			lastSend = m;
 			super.send(m);
 		}
-		
+
 		@Override
 		public String receive() throws IOException
 		{
 			String msg = null;
-			
+
 			lastReceive = super.receive();
-			
+
 			if( lastReceive.equals( "CANDIDATE" ) ) {
 				msg = Candidate.generateRandomCandidate(N).toString();
 				send( msg );
@@ -195,10 +211,10 @@ public class IoManagerTest
 			else {
 				msg = "I don't know what to say. The last thing the server told me was: " + lastReceive;
 			}
-			
-//			lastReceive = super.receive();
-			
+
+			//			lastReceive = super.receive();
+
 			return lastReceive; 
 		}
-    }
+	}
 }

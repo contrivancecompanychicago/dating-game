@@ -48,7 +48,6 @@ public class Candidate extends HidePrecision2Vec
 	{
 		Veci p = new Veci(prefs);
 		Veci c = new Veci(this);
-		
 		return (double)(Opi.DOT.performOp( p, c )) / 10000;
 	}
 	
