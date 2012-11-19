@@ -125,7 +125,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>rky.evasion.Evasion</mainClass>
+							<mainClass>rky.dating.io.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
