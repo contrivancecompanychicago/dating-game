@@ -18,7 +18,7 @@ import rky.dating.primitives.Preferences;
 
 public class IoManagerTest
 {
-	protected static int N = 10;
+	protected static int N = 20;
 
 	private static final int PORT = 54321;
 
@@ -35,9 +35,9 @@ public class IoManagerTest
 		TestClient person = new TestPersonClient(2);
 
 		String initMsg = matchmaker.receive();
-		assertEquals(initMsg, "M 10");
+		assertEquals(initMsg, "M " + N);
 		initMsg = person.receive();
-		assertEquals(initMsg, "P 10");
+		assertEquals(initMsg, "P " + N);
 
 		assertEquals(person.receive(),"WEIGHTS");
 		assertEquals(person.receive(),"OK");
@@ -45,10 +45,13 @@ public class IoManagerTest
 		for(int i = 0 ; i <20; i++){
 			
 			String resp1 = matchmaker.receive(); // receive candidate
-			matchmaker.receive(); //recieve score
+			System.out.println( String.format("1(%d): %s", i, resp1) );  //0.0
+			String str = matchmaker.receive(); //recieve score
+			System.out.println( String.format("2(%d): %s", i, str) );    //candidate
 
 			assertEquals(matchmaker.receive(),"OK");
 			String resp2 = person.receive(); // receive noise
+			System.out.println( String.format("3(%d): %s", i, resp2) );
 			assertEquals(person.receive(),"OK"); // receive noise
 			
 		}

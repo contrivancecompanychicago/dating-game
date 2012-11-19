@@ -48,8 +48,8 @@ public class Preferences extends HidePrecision2Vec
 				negative += val;
 		}
 		
-		if( positive !=  100 )  return "positive preferences add up to " + positive;
-		if( negative != -100 )  return "negative preferences add up to " + negative;
+		if( positive !=  100 )  return "positive preferences add up to " + positive + ": " + this.toString();
+		if( negative != -100 )  return "negative preferences add up to " + negative + ": " + this.toString();
 		
 		return null;
 	}
