@@ -71,7 +71,7 @@ public class Dating
 				throw new RuntimeException( "generated an illegal candidate: " + c.toString() + " -> " + c.getCachedMsg() );
 			randomCandidatesMsg.append( c.toString() );
 			double score = c.getScore( p );
-			randomCandidatesMsg.append( " " + score + " " );
+			randomCandidatesMsg.append( " " + String.format("%.2f", score) + " " );
 		}
 		randomCandidatesMsg.setLength( randomCandidatesMsg.length()-1 );
 		informPlayer( Role.M, randomCandidatesMsg.toString() );
