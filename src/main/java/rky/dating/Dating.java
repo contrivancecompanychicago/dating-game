@@ -55,9 +55,9 @@ public class Dating
 		//------------------------------------------------------
 			startTimer( Role.P );
 			Preferences p = getPlayerPreferences(n);
-			pauseTimer( Role.P );
-	
-			if( !p.isValid() ) {
+			checkTimeLeft(Role.P, pauseTimer( Role.P ));
+			
+			if( !p.isValid()) {
 //				informPlayerOfError( Role.P, p.getCachedMsg() );
 				throw new PlayerErrorException( getPlayer(Role.P), p.getCachedMsg() );
 			} else {
@@ -87,9 +87,10 @@ public class Dating
 				if( maxScore == 1 )
 					break;
 	
-				startTimer( Player.Role.M );
+				startTimer( Role.M );
 				Candidate c = getCandidateFromM( n );
-				pauseTimer( Player.Role.M );
+				checkTimeLeft(Role.M, pauseTimer( Role.M ));
+	            
 				if( c.isValid() )
 					confirmPlayer( Player.Role.M, "accepted Candidate" );
 				else {
@@ -97,19 +98,16 @@ public class Dating
 					throw new PlayerErrorException( getPlayer( Role.M ), c.getCachedMsg() );
 				}
 	
-	
-	
-				startTimer( Player.Role.P );
+				startTimer( Role.P );
 				Noise noise = getNoiseFromP();
-				pauseTimer( Player.Role.P );
+				checkTimeLeft(Role.P, pauseTimer( Role.P ));
+				
 				if( noise.isValid( p ) )
 					confirmPlayer( Player.Role.P, "accepted Noise" );
 				else {
 //					informPlayerOfError( Player.Role.P, noise.getCachedMsg() );
 					throw new PlayerErrorException( getPlayer(Role.P), noise.getCachedMsg() );
 				}
-	
-	
 	
 				double score = c.getScore( p, noise );              // noisy score
 				informPlayer( Player.Role.M, String.format("%.2f", score) );   // note that format() rounds the float
@@ -153,15 +151,22 @@ public class Dating
 		return new Candidate(response.toString());
 	}
 
-	private static void pauseTimer(Role m) {
-		// TODO Auto-generated method stub
-
+	/**
+	 * Returns true if time limit was exceeded by last action.
+	 */
+	private static boolean pauseTimer(Role r) {
+		return getPlayer(r).pauseTimer();
 	}
-
-	private static void startTimer(Role m) {
-		// TODO Auto-generated method stub
-
-	}
+	
+	private static void startTimer(Role r) {
+        getPlayer(r).startTimer();
+    }
+	
+	private static void checkTimeLeft(Role r, boolean hasTimeLeft) throws PlayerErrorException {
+        if (!hasTimeLeft) {
+            throw new PlayerErrorException(getPlayer(r), "Ran out of time");
+        }
+    }
 
 	private static void informPlayer( Role role, String msg) {
 
