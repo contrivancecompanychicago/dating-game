@@ -85,7 +85,7 @@ public class DatingGUI extends GamePlatform {
 		g2.setStroke(new BasicStroke(3));
 
 		if(round == 1){
-			topScale = new Line(50,250+fromOffset,900,250+fromOffset);
+			topScale = new Line(50,250+fromOffset,700,250+fromOffset);
 
 		}else{
 			bottomScale = new Line(50,250+fromOffset,700,250+fromOffset);
