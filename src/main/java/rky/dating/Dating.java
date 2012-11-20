@@ -7,6 +7,7 @@ import rky.dating.player.Player.Role;
 import rky.dating.primitives.Candidate;
 import rky.dating.primitives.Noise;
 import rky.dating.primitives.Preferences;
+import rky.gui.gamePlatform.DatingGUI;
 
 public class Dating
 {
@@ -14,6 +15,8 @@ public class Dating
 	private static IoManager io;
 	private static Player matchmaker;
 	private static Player person;
+	
+	public static DatingGUI applet;
 
 	public static void main(String[] args)
 	{
@@ -114,7 +117,12 @@ public class Dating
 				double score = c.getScore( p, noise );              // noisy score
 				informPlayer( Player.Role.M, String.format("%.2f", score) );   // note that format() rounds the float
 				maxScore = Math.max( maxScore, c.getScore( p ) );   // actual score
-	
+				
+				
+				//update applet
+				if(applet != null){
+					applet.updateScore(maxScore);
+				}
 			}
 	
 

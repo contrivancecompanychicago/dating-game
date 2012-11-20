@@ -3,39 +3,46 @@ package rky.gui.gamePlatform;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeSet;
-
-import rky.gui.gamePlatform.Line.Point;
 import rky.gui.gamePlatform.Line;
 
 
 @SuppressWarnings("serial")
 public class DatingGUI extends GamePlatform {
 
-	Font bigFont = new Font("Helvetica", Font.ITALIC, 23);
-	Font smallFont = new Font("Helvetica", Font.BOLD, 18);
+	private Font bigFont = new Font("Helvetica", Font.ITALIC, 23);
+	private Font smallFont = new Font("Helvetica", Font.BOLD, 18);
 
-	Color color[] = {Color.red,new Color(255,128,0),Color.yellow,Color.green,
-			Color.cyan,new Color(140,140,255),Color.magenta,Color.red};
+	private String team1 = "????";
+	private String team2 = "????";
 
-	String team1 = "????";
-	String team2 = "????";
+	private double bestScoreTeam1 = -1;
+
+	private int no_of_guess_Team1 = 0;
 
 
-	List<RectPiece>  bars = new ArrayList<RectPiece>();
-	Set<RectPiece> setOfBars = new TreeSet<RectPiece>();
-	Line upper,lower;
+	private List<RectPiece>  bars = new ArrayList<RectPiece>();
+	private Set<RectPiece> setOfBars = new TreeSet<RectPiece>();
+	private Line topScale,bottomScale;
+
+
+	public static final int IDEAL_WIDTH = 800;
+	public static final int IDEAL_HEIGHT = 400;
+
 
 	public void setup(){
-		addNewBar(new Line(50,250,700,250),0.4);
-		addNewBar(new Line(50,250,700,250),1);
-		addNewBar(new Line(50,250,700,250),-.6);
-
+		//setSize(IDEAL_WIDTH,IDEAL_HEIGHT);
+		setBackground(Color.CYAN);
 	}
 
 	public void update() {
@@ -50,10 +57,10 @@ public class DatingGUI extends GamePlatform {
 
 	public void overlay(Graphics g) {
 
+		g.setColor(Color.BLACK);
 		Graphics2D g2 = (Graphics2D) g;
 		createGraph(1,g2, 0);
-		createGraph(2,g2, 300);
-
+		//createGraph(2,g2, 300);
 
 	}
 
@@ -78,11 +85,12 @@ public class DatingGUI extends GamePlatform {
 		g2.setStroke(new BasicStroke(3));
 
 		if(round == 1){
-			upper = new Line(50,250+fromOffset,700,250+fromOffset);
+			topScale = new Line(50,250+fromOffset,700,250+fromOffset);
 
 		}else{
-			lower = new Line(50,250+fromOffset,700,250+fromOffset);
+			bottomScale = new Line(50,250+fromOffset,700,250+fromOffset);
 		}
+
 
 		g2.drawLine(50,250+fromOffset,700,250+fromOffset);
 
@@ -93,6 +101,13 @@ public class DatingGUI extends GamePlatform {
 		}else{
 			g2.drawString(team2,140,300+fromOffset);
 		}
+
+		g2.drawString("Score : ",30,330 + fromOffset);
+		g2.drawString(""+bestScoreTeam1,90,330 + fromOffset);
+		g2.drawString(""+no_of_guess_Team1,130,330 + fromOffset);
+
+
+
 
 		g2.drawString("Person :",600,300+fromOffset);
 		if(round == 1){
@@ -105,8 +120,6 @@ public class DatingGUI extends GamePlatform {
 
 	private void addNewBar(Line l,double score){
 
-		Point start = l.getStart();
-
 		int barX = 0;
 		int barY = l.start.y - 60;
 
@@ -116,13 +129,92 @@ public class DatingGUI extends GamePlatform {
 
 		barX =(int)( place - 5) + 50;
 
-		System.out.println("x="+barX+"y="+barY);
+		//System.out.println("x="+barX+"y="+barY);
 		RectPiece bar = new RectPiece();
 		bar.setBounds(barX, barY, 10, 60);
 		bar.setColor(Color.blue);
 		addPiece(bar);
 
 		bars.add(bar);
+	}
+
+	public void startGame(String team1,String team2){
+
+		this.team1 = team1;
+		this.team2 = team2;
+
+
+	}
+
+	public void updateScore(double score){
+		
+		double value = score;
+		score = Math.round( value * 100.0 ) / 100.0;
+
+		if(topScale != null || bottomScale != null){
+
+
+
+			if(bestScoreTeam1 < score){
+				bestScoreTeam1 = score;
+			}
+
+			addNewBar(topScale, score);
+			no_of_guess_Team1++;
+		}
+	}
+
+
+	/**
+	 * Test applet
+	 * @param args
+	 */
+	private final static Timer timer = new Timer();
+
+	public static void main(String args[]){
+
+		final DatingGUI applet = new DatingGUI();
+		applet.init();
+		applet.start();
+
+		Frame frame = new Frame("RKY-Dating-Game Applet");
+		frame.addWindowListener(new WindowAdapter()
+		{
+			public void windowClosing(WindowEvent e)
+			{
+				System.exit(0);
+			}
+		});
+
+		frame.add(applet);
+		frame.setSize(IDEAL_WIDTH,IDEAL_HEIGHT);
+		frame.setVisible(true);
+
+		timer.schedule(new TimerTask() {
+			public void run() {
+				playSound();
+				timer.cancel();
+			}
+			private void playSound() {
+				// Start a new thread to play a sound...
+				applet.startGame("rky", "arx");
+				for(int i = 0 ; i < 15; i++){
+					
+					double value = Math.pow(-1,i)*Math.random();
+					double finalValue = Math.round( value * 100.0 ) / 100.0;
+
+					applet.updateScore(finalValue);
+
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}, (long) (2000));
+
 	}
 
 }
