@@ -27,7 +27,6 @@ public class Main {
 
 			int N = Integer.parseInt(args[0]);
 			int PORT = Integer.parseInt(args[1]);
-			
 			boolean gui = true;
 			try
             {
