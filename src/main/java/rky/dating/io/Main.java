@@ -27,23 +27,30 @@ public class Main {
 
 			int N = Integer.parseInt(args[0]);
 			int PORT = Integer.parseInt(args[1]);
+			boolean gui = true;
+			try
+            {
+                gui = Boolean.parseBoolean(args[2]);
+            }
+            catch (Exception e) { }
 
 			io = new IoManager(PORT);
 
-			System.out.println("TEST: About to start server...");
-			System.out.println("Listening to port :"+PORT);
+			System.out.println("Server started and listening on port "+PORT);
 			
 			io.start(N);
 
 			Dating.setIO(io);
 			
-			//initiate applet
-			startGUI();
-			
 			//initiate players
-			Players players = io.getPlayers();
-			applet.startGame(players.matchmaker.name, players.person.name);
-			Dating.applet = applet;
+            Players players = io.getPlayers();
+			
+			//initiate applet
+            if (gui) {
+                startGUI();
+                applet.startGame(players.matchmaker.name, players.person.name);
+                Dating.applet = applet;
+            }
 
 			Dating.setMatchmaker(players.matchmaker);
 			Dating.setPerson(players.person);
