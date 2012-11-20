@@ -30,12 +30,21 @@ public class HidePrecision2Vec extends Veci
 			String[] split = stringNums[i].split("\\.");  // before point and after point
 			int val = Math.abs(Integer.parseInt(split[0])) * 100;
 			if( split.length == 2 ) {
+				///////  this may need to be replaced
 				if( split[1].length() == 1 )
 					val += Integer.parseInt(split[1]) * 10;
 				else if( split[1].length() == 2 )
 					val += Integer.parseInt(split[1]);
 				else
 					throw new IllegalArgumentException("invalid precision on string vector");
+				//////////////////////////////////////
+				//////   ... replaced with this:    
+				/*
+				if( split[1].length() > 0 )
+					val += Integer.parseInt("" + split[1].charAt(0)) * 10;
+				if( split[1].length() > 1 )
+					val += Integer.parseInt("" + split[1].charAt(1));
+				 *///////   ... end of replace
 			}
 			if( split[0].charAt(0) == '-' )
 				val = -val;
